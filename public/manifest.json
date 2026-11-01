@@ -1,0 +1,96 @@
+{
+  "id": "/",
+  "name": "SENND — Stick. Scan. Share.",
+  "short_name": "SENND",
+  "description": "Mobile-first QR code discovery and sharing platform. Discover trending QR codes, scan places & products, and create stickable QR codes.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "dir": "ltr",
+  "lang": "en",
+  "theme_color": "#171717",
+  "background_color": "#ffffff",
+  "prefer_related_applications": false,
+  "categories": ["utilities", "productivity", "social", "shopping"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Scan QR Code",
+      "short_name": "Scan",
+      "description": "Quickly open the camera QR scanner",
+      "url": "/#scan",
+      "icons": [
+        {
+          "src": "/icons/scan-shortcut.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Create Post",
+      "short_name": "Create",
+      "description": "Generate a new stickable QR code",
+      "url": "/#create",
+      "icons": [
+        {
+          "src": "/icons/create-shortcut.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "SENND Mobile Discovery Feed"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "SENND QR Code Platform"
+    }
+  ],
+  "share_target": {
+    "action": "/#share",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

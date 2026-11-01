@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>SENND — Stick. Scan. Share.</title>
+  <meta name="description" content="SENND: Discover trending QR codes, scan places & products, and create scannable stickers.">
+
+  <!-- PWA & Mobile Web App Meta (PWABuilder & W3C Compliant) -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#171717" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#171717" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SENND">
+  <meta name="application-name" content="SENND">
+  <meta name="msapplication-TileColor" content="#171717">
+  <meta name="msapplication-TileImage" content="/icons/icon-192.png">
+
+  <!-- PWA Icons & Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- QRCode.js (for high-speed QR generation) and jsQR (for real-time camera decoding) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <!-- ====================================================================
+         PAGE 1: HOME PAGE
+         ==================================================================== -->
+    <div id="homeView" class="page-view active">
+      <!-- HEADER -->
+      <header class="home-header">
+        <div class="header-brand-wrap" id="brandLogoHome">
+          <h1 class="brand-title">SENND</h1>
+          <p class="brand-tagline">STICK · SCAN · SHARE</p>
+        </div>
+
+        <div class="home-header-actions">
+          <button class="header-install-btn hidden" id="installAppBtn" aria-label="Install SENND App" title="Install SENND App">
+            <i class="fa-solid fa-download"></i>
+            <span>Install</span>
+          </button>
+          <button class="header-create-btn" id="openCreatePostBtn" aria-label="Create Post" title="Create Post">
+            <i class="fa-solid fa-plus"></i>
+            <span>Create</span>
+          </button>
+          <button class="header-scan-btn" id="headerScan" aria-label="Scan QR Code" title="Open QR Scanner">
+            <span class="header-scan-icon-wrap">
+              <img src="/assets/aistudio/ski-goggles__1__caac7513.png" alt="Scan QR Code" class="header-scan-img">
+            </span>
+          </button>
+        </div>
+      </header>
+
+      <!-- BRAND 3-COLOR ACCENT LINE -->
+      <div class="brand-accent">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <!-- PWA INSTALL BANNER (PWABUILDER & MOBILE INSTALL) -->
+      <div id="pwaInstallBanner" class="pwa-install-banner hidden">
+        <div class="pwa-banner-content">
+          <img src="/icons/icon-192.png" alt="SENND Icon" class="pwa-banner-icon">
+          <div class="pwa-banner-text">
+            <span class="pwa-banner-title">Install SENND App</span>
+            <span class="pwa-banner-sub">One-tap camera scan & offline access</span>
+          </div>
+        </div>
+        <div class="pwa-banner-actions">
+          <button id="pwaBannerInstallBtn" class="pwa-btn-install">Install</button>
+          <button id="pwaBannerDismissBtn" class="pwa-btn-dismiss" aria-label="Dismiss banner">&times;</button>
+        </div>
+      </div>
+      <!-- CATEGORY FILTERS -->
+      <div class="filters" role="tablist">
+        <button class="filter-btn active" data-filter="All">All</button>
+        <button class="filter-btn" data-filter="Product">Products</button>
+        <button class="filter-btn" data-filter="Place">Places</button>
+        <button class="filter-btn" data-filter="Video">Videos</button>
+        <button class="filter-btn" data-filter="Audio">Audio</button>
+      </div>
+
+      <!-- POSTS CONTAINER -->
+      <section class="posts-grid" id="postsContainer">
+        <!-- Rendered by JavaScript -->
+      </section>
+    </div>
+
+    <!-- ====================================================================
+         PAGE 2: SCAN PAGE
+         ==================================================================== -->
+    <div id="scanView" class="page-view">
+      <!-- TOP NAVIGATION -->
+      <header class="scan-header">
+        <button class="icon-btn back-btn" id="backBtn" aria-label="Back to Home" title="Back to Home">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
+        <div class="scan-header-actions">
+          <button class="icon-btn" id="flashBtn" aria-label="Toggle Flashlight" title="Toggle Flashlight">
+            <i class="fa-solid fa-bolt"></i>
+          </button>
+
+          <button class="icon-btn" id="locationBtn" aria-label="Get Location" title="Get Location">
+            <i class="fa-solid fa-location-dot"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- PAGE TITLE -->
+      <section class="scan-title-section">
+        <h1>Scan QR Code</h1>
+        <p>Point your camera at a QR code</p>
+      </section>
+
+      <!-- SCANNER (EXACT 3:2 ASPECT RATIO) -->
+      <section class="scanner" id="scannerContainer">
+        <video id="camera" autoplay playsinline muted></video>
+        <canvas id="qrCanvas"></canvas>
+
+        <button class="stop-camera-btn" id="stopCameraBtn" aria-label="Stop Camera">
+          <i class="fa-solid fa-stop"></i>
+          <span>Stop</span>
+        </button>
+
+        <div class="camera-placeholder" id="cameraPlaceholder">
+          <i class="fa-solid fa-camera"></i>
+          <h3>Scan QR Code</h3>
+          <p>Place the QR code inside the frame</p>
+
+          <button class="primary-btn" id="startCamera">
+            <i class="fa-solid fa-camera"></i>
+            <span>Start Camera</span>
+          </button>
+        </div>
+
+        <!-- SCANNER CORNERS -->
+        <div class="scan-frame" id="scanFrame">
+          <span class="corner top-left"></span>
+          <span class="corner top-right"></span>
+          <span class="corner bottom-left"></span>
+          <span class="corner bottom-right"></span>
+          <div class="scan-line"></div>
+        </div>
+
+        <div class="scan-label">
+          <i class="fa-solid fa-qrcode"></i>
+          Scan QR Code
+        </div>
+      </section>
+
+      <!-- EXPLORE SECTION (3 BUTTONS IN ONE ROW) -->
+      <h2 class="section-title">Explore</h2>
+
+      <section class="options-row">
+        <button class="option-box" id="uploadImage" aria-label="Upload Image">
+          <span class="option-icon">
+            <i class="fa-regular fa-image"></i>
+          </span>
+          <span>Upload<br>Image</span>
+        </button>
+
+        <button class="option-box" id="uploadPost" aria-label="Post Image">
+          <span class="option-icon">
+            <i class="fa-regular fa-images"></i>
+          </span>
+          <span>Post<br>Image</span>
+        </button>
+
+        <button class="option-box" id="productBtn" aria-label="Product and Download">
+          <span class="option-icon">
+            <i class="fa-solid fa-download"></i>
+          </span>
+          <span>Product /<br>Download</span>
+        </button>
+      </section>
+
+      <!-- HIDDEN IMAGE INPUTS -->
+      <input type="file" id="imageInput" accept="image/*" hidden>
+      <input type="file" id="postInput" accept="image/*" hidden>
+
+      <!-- SEARCH SECTION (3 BUTTONS IN ONE ROW) -->
+      <h2 class="section-title">Search</h2>
+
+      <div class="search-input-box" id="searchInputBox">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+          type="text"
+          id="scannerSearchInput"
+          placeholder="Search here..."
+          aria-label="Search query"
+        >
+        <button id="closeSearch" aria-label="Close search">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <section class="search-row">
+        <button class="search-box" id="searchBtn" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span>Search</span>
+        </button>
+
+        <button class="search-box" id="imageSearchBtn" aria-label="Image Search">
+          <i class="fa-solid fa-camera"></i>
+          <span>Image</span>
+        </button>
+
+        <button class="search-box" id="voiceBtn" aria-label="Voice Search">
+          <i class="fa-solid fa-microphone"></i>
+          <span>Voice</span>
+        </button>
+      </section>
+
+      <!-- STATUS NOTIFICATION MESSAGE -->
+      <p id="statusMessage" aria-live="polite"></p>
+    </div>
+
+  </main>
+
+  <!-- ====================================================================
+       FIXED BOTTOM NAVIGATION
+       ==================================================================== -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="navHome" data-target="homeView" aria-label="Home" title="Home">
+      <span class="home-icon-wrap">
+        <img src="/assets/aistudio/home_4bb2deca.png" alt="Home" class="home-img home-normal">
+        <img src="/assets/aistudio/home__1__e73eba52.png" alt="Home Active" class="home-img home-active">
+      </span>
+    </button>
+    <button class="nav-item" id="navScan" data-target="scanView" aria-label="Scan" title="Scan">
+      <span class="scan-icon-wrap">
+        <img src="/assets/aistudio/vr-glasses__1__2fbb635f.png" alt="Scan" class="scan-img scan-normal">
+        <img src="/assets/aistudio/vr-glasses_d913fa79.png" alt="Scan Active" class="scan-img scan-active">
+      </span>
+    </button>
+    <button class="nav-item" id="navProducts" aria-label="Products">
+      <i class="fa-solid fa-box"></i>
+      <span>Products</span>
+    </button>
+    <button class="nav-item" id="navSaved" aria-label="Saved QRs">
+      <i class="fa-solid fa-bookmark"></i>
+      <span>Saved</span>
+    </button>
+  </nav>
+
+  <!-- ====================================================================
+       MODALS
+       ==================================================================== -->
+
+  <!-- 1. SCANNED RESULT MODAL -->
+  <div class="modal-overlay" id="resultModal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+          <span>QR Detected</span>
+        </div>
+        <button class="modal-close-btn" id="closeResultModal" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <p style="font-size: 12px; color: var(--gray); margin-bottom: 8px;">Decoded Content:</p>
+      <div class="scanned-payload-box" id="scannedPayload"></div>
+
+      <div class="modal-action-row">
+        <button class="secondary-btn" id="copyResultBtn">
+          <i class="fa-regular fa-copy"></i>
+          <span>Copy Text</span>
+        </button>
+        <button class="primary-btn" id="openLinkBtn" style="display: none;">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          <span>Open Link</span>
+        </button>
+      </div>
+
+      <button class="secondary-btn" id="scanAgainBtn" style="width: 100%; margin-top: 10px;">
+        <i class="fa-solid fa-rotate-right"></i>
+        <span>Scan Another Code</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. POST DETAIL MODAL (WIREFRAME: LEFT LIST + QR, RIGHT IMAGE + LOCATION) -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-sheet detail-modal-sheet">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span class="post-category" id="modalCategory" style="margin-bottom: 0;">Category</span>
+          <span class="detail-verified-chip"><i class="fa-solid fa-circle-check"></i> Verified</span>
+        </div>
+        <button class="modal-close-btn" id="closeDetailModal" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- 2-COLUMN WIREFRAME GRID -->
+      <div class="detail-split-grid">
+        <!-- LEFT COLUMN: LIST DETAILS & QR CODE BELOW -->
+        <div class="detail-col-left">
+          <!-- TOP: LIST / DETAILS -->
+          <div class="detail-list-box">
+            <h2 id="modalTitle" class="detail-title">Title</h2>
+            <p id="modalDescription" class="detail-desc">Description</p>
+            <div class="detail-specs-list">
+              <div class="detail-spec-row">
+                <i class="fa-solid fa-qrcode" style="color: var(--green-dark);"></i>
+                <span>Direct Camera Scan</span>
+              </div>
+              <div class="detail-spec-row">
+                <i class="fa-solid fa-shield-halved" style="color: #6366f1;"></i>
+                <span id="modalMetaType">Verified SENND Item</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- LIST KE NICHE: QR CODE -->
+          <div class="detail-qr-box-wrap">
+            <div class="detail-qr-caption">
+              <i class="fa-solid fa-qrcode" style="color: var(--green-dark);"></i>
+              <span>QR STICKER CODE</span>
+            </div>
+            <div class="detail-qr-inner">
+              <div id="modalQrPreviewBox" class="detail-qr-display" title="Tap to enlarge QR sticker"></div>
+              <div class="detail-qr-meta">
+                <span class="detail-qr-tag">DESTINATION URL</span>
+                <div id="modalQrUrl" class="detail-qr-url"></div>
+                <button id="modalDownloadStickerBtn" class="detail-qr-btn">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Download Sticker PNG</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: IMAGE & LOCATION BELOW -->
+        <div class="detail-col-right">
+          <!-- TOP: IMAGE -->
+          <div class="detail-image-box">
+            <img id="modalImage" class="modal-detail-img" src="" alt="Post image">
+          </div>
+
+          <!-- IMAGE KE NICHE: LOCATION -->
+          <div id="modalLocationWrap" class="detail-location-bar">
+            <div class="detail-location-icon">
+              <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <div class="detail-location-text">
+              <span class="detail-loc-label">LOCATION</span>
+              <span id="modalLocation" class="detail-loc-val">Location</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER ACTIONS -->
+      <div class="modal-action-row detail-action-row">
+        <button class="secondary-btn" id="modalSaveBtn">
+          <i class="fa-regular fa-bookmark"></i>
+          <span id="modalSaveText">Save</span>
+        </button>
+        <button class="secondary-btn" id="modalShareBtn">
+          <i class="fa-solid fa-share-nodes"></i>
+          <span>Share</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. LARGE QR PREVIEW & DOWNLOAD MODAL -->
+  <div class="modal-overlay" id="qrModal">
+    <div class="modal-sheet" style="text-align: center;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-qrcode" style="color: var(--green-dark);"></i>
+          <span>SENND QR Sticker</span>
+        </div>
+        <button class="modal-close-btn" id="closeQrModal" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <h3 id="qrModalPostTitle" style="font-size: 15px; font-weight: 750; color: #171717; margin-bottom: 12px;">Post Title</h3>
+
+      <div id="largeQrContainer" style="display: inline-flex; padding: 14px; background: #ffffff; border: 2px dashed #dddddd; border-radius: 18px; margin-bottom: 14px;"></div>
+
+      <p id="qrModalDestination" style="font-size: 11px; font-family: monospace; color: var(--gray); word-break: break-all; margin-bottom: 14px;"></p>
+
+      <div class="modal-action-row">
+        <button class="primary-btn" id="downloadStickerCardBtn" style="background: #171717;">
+          <i class="fa-solid fa-download" style="color: var(--green);"></i>
+          <span>Download Sticker PNG</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. IMAGE PREVIEW & DECODE MODAL -->
+  <div class="modal-overlay" id="imagePreviewModal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-regular fa-image"></i>
+          <span>Scanned Image</span>
+        </div>
+        <button class="modal-close-btn" id="closeImageModal" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="preview-img-container">
+        <img id="previewImg" src="" alt="Preview">
+      </div>
+
+      <div id="imageQrResultBox" style="display: none; margin-bottom: 12px;">
+        <p style="font-size: 12px; color: #065f46; font-weight: 700; margin-bottom: 4px;">
+          <i class="fa-solid fa-qrcode"></i> Decoded QR Destination:
+        </p>
+        <div class="scanned-payload-box" id="imageQrPayload"></div>
+      </div>
+
+      <div class="modal-action-row">
+        <button class="primary-btn" id="imageOpenLinkBtn" style="display: none;">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          <span>Open Link</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. CREATE POST MODAL -->
+  <div class="modal-overlay" id="postModal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-regular fa-images" style="color: var(--orange);"></i>
+          <span>Create SENND Post</span>
+        </div>
+        <button class="modal-close-btn" id="closePostModal" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="preview-img-container" id="postPreviewWrap" style="display: none;">
+        <img id="postPreviewImg" src="" alt="Post Preview">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Post Title *</label>
+        <input type="text" id="newPostTitle" class="form-input" placeholder="e.g. Wireless Noise Canceling Audio" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select id="newPostCategory" class="form-input" style="height: 42px;">
+          <option value="Product">Product</option>
+          <option value="Place">Place</option>
+          <option value="Video">Video</option>
+          <option value="Audio">Audio</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Short Description</label>
+        <input type="text" id="newPostDesc" class="form-input" placeholder="What will scanners discover?">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Location (e.g. City or Shop)</label>
+        <input type="text" id="newPostLoc" class="form-input" placeholder="e.g. Ahmedabad, Gujarat">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">QR Destination URL *</label>
+        <input type="url" id="newPostUrl" class="form-input" placeholder="https://yourbrand.com/item" required>
+      </div>
+
+      <button class="primary-btn" id="publishPostBtn" style="width: 100%; justify-content: center; background: #171717; margin-top: 10px;">
+        <i class="fa-solid fa-paper-plane" style="color: var(--green);"></i>
+        <span>Publish & Generate QR</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 6. PRODUCT / DOWNLOAD MODAL -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-download" style="color: var(--purple);"></i>
+          <span>Product / Download</span>
+        </div>
+        <button class="modal-close-btn" id="closeProductModal" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <p style="font-size: 13px; color: var(--gray); margin-bottom: 14px;">
+        Download printable QR stickers, product templates, and user manuals.
+      </p>
+
+      <div class="download-item-card">
+        <div class="download-thumb">
+          <i class="fa-solid fa-qrcode"></i>
+        </div>
+        <div class="download-info">
+          <div class="download-name">Printable QR Sticker Sheet</div>
+          <div class="download-sub">A4 PDF Template · 12 Stickers</div>
+        </div>
+        <button class="download-action-btn" data-download="SENND-Sticker-Sheet.pdf">
+          <i class="fa-solid fa-arrow-down"></i>
+          <span>Get</span>
+        </button>
+      </div>
+
+      <div class="download-item-card">
+        <div class="download-thumb" style="background: #e0f2fe; color: #0284c7;">
+          <i class="fa-solid fa-file-lines"></i>
+        </div>
+        <div class="download-info">
+          <div class="download-name">Product Placement Guide</div>
+          <div class="download-sub">Quick Start Documentation</div>
+        </div>
+        <button class="download-action-btn" data-download="Product-Guide.pdf" style="background: #0284c7;">
+          <i class="fa-solid fa-arrow-down"></i>
+          <span>Get</span>
+        </button>
+      </div>
+
+      <div class="download-item-card">
+        <div class="download-thumb" style="background: #fef3c7; color: #d97706;">
+          <i class="fa-solid fa-box-open"></i>
+        </div>
+        <div class="download-info">
+          <div class="download-name">Sample Product Catalog</div>
+          <div class="download-sub">Demo QRs & Specs</div>
+        </div>
+        <button class="download-action-btn" data-download="Sample-Catalog.pdf" style="background: #d97706;">
+          <i class="fa-solid fa-arrow-down"></i>
+          <span>Get</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. PWA IOS INSTALL INSTRUCTIONS MODAL -->
+  <div class="modal-overlay" id="iosInstallModal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-brands fa-apple" style="color: var(--text);"></i>
+          <span>Install SENND on iOS</span>
+        </div>
+        <button class="modal-close-btn" id="closeIosInstallModal" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="ios-install-steps">
+        <p style="font-size: 13.5px; color: var(--gray); margin-bottom: 14px;">
+          Install SENND to your Home Screen for instant camera scanning, fullscreen experience, and offline access:
+        </p>
+        <div class="ios-step-row">
+          <span class="ios-step-badge">1</span>
+          <div class="ios-step-text">Tap the <strong>Share</strong> icon <i class="fa-solid fa-arrow-up-from-bracket" style="color: #0284c7;"></i> in Safari's bottom toolbar.</div>
+        </div>
+        <div class="ios-step-row">
+          <span class="ios-step-badge">2</span>
+          <div class="ios-step-text">Scroll down the share sheet and tap <strong>Add to Home Screen</strong> <i class="fa-regular fa-square-plus" style="color: #171717;"></i>.</div>
+        </div>
+        <div class="ios-step-row">
+          <span class="ios-step-badge">3</span>
+          <div class="ios-step-text">Tap <strong>Add</strong> in the top-right corner to finish.</div>
+        </div>
+      </div>
+
+      <button class="primary-btn" id="dismissIosModalBtn" style="margin-top: 18px; width: 100%;">
+        <i class="fa-solid fa-check"></i>
+        Got It
+      </button>
+    </div>
+  </div>
+
+  <!-- PWA UPDATE NOTIFICATION TOAST -->
+  <div id="pwaUpdateToast" class="pwa-update-toast hidden">
+    <div class="pwa-toast-inner">
+      <div class="pwa-toast-icon">
+        <i class="fa-solid fa-cloud-arrow-down"></i>
+      </div>
+      <div class="pwa-toast-copy">
+        <span class="pwa-toast-title">Update Ready</span>
+        <span class="pwa-toast-sub">A newer version of SENND is available.</span>
+      </div>
+      <button id="pwaUpdateReloadBtn" class="pwa-toast-btn">Update</button>
+    </div>
+  </div>
+
+  <!-- OFFLINE STATUS PILL -->
+  <div id="pwaOfflinePill" class="pwa-offline-pill hidden">
+    <i class="fa-solid fa-wifi"></i>
+    <span>Offline Mode · Cached Content</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

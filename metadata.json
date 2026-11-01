@@ -1,0 +1,6 @@
+{
+  "name": "SENND — Stick. Scan. Share.",
+  "description": "Mobile-first QR code discovery and sharing platform. Discover trending QR codes, scan places & products, and create scannable content.",
+  "requestFramePermissions": ["camera", "geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
