@@ -212,20 +212,47 @@ button#headerScan {
   outline: 0 !important;
   pointer-events: none;
   user-select: none;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header-scan-img.scan-normal {
   opacity: 1;
+  transform: scale(1);
 }
 
-/* Hover state: smooth scale feedback */
-.header-scan-btn:hover .header-scan-icon-wrap,
-.header-scan-btn:hover .goggles-icon-wrap {
-  transform: translateY(-1px) scale(1.1);
-}
-
-/* Active / clicked state: subtle scale feedback */
-.header-scan-btn:active .header-scan-icon-wrap,
-.header-scan-btn.active .header-scan-icon-wrap {
+.header-scan-img.scan-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
   transform: scale(0.92);
+}
+
+.header-scan-btn:hover .header-scan-icon-wrap {
+  transform: translateY(-1px) scale(1.08);
+}
+
+.header-scan-btn:hover .header-scan-img.scan-normal {
+  opacity: 0.15;
+}
+
+.header-scan-btn:hover .header-scan-img.scan-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.header-scan-btn.active .header-scan-img.scan-normal,
+.header-scan-btn:active .header-scan-img.scan-normal {
+  opacity: 0 !important;
+  transform: scale(0.88) !important;
+}
+
+.header-scan-btn.active .header-scan-img.scan-active,
+.header-scan-btn:active .header-scan-img.scan-active {
+  opacity: 1 !important;
+  transform: scale(1.05) !important;
 }
 
 .header-create-btn {
@@ -1021,10 +1048,27 @@ button#headerScan {
   background: #f7f7fa;
 }
 
-.camera-placeholder > i {
-  color: var(--purple);
-  font-size: 40px;
-  margin-bottom: 10px;
+@media (prefers-color-scheme: dark) {
+  .camera-placeholder {
+    background: #18181b !important;
+    color: #ffffff !important;
+  }
+}
+
+html.dark-mode .camera-placeholder {
+  background: #18181b !important;
+  color: #ffffff !important;
+}
+
+.camera-placeholder-img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin-bottom: 14px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .camera-placeholder h3 {
@@ -1061,6 +1105,27 @@ button#headerScan {
 
 .primary-btn:active {
   transform: scale(0.96);
+}
+
+#startCamera {
+  width: 56px;
+  height: 56px;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: var(--purple) !important;
+  box-shadow: 0 6px 16px rgba(108, 92, 231, 0.35);
+}
+
+.start-camera-img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  pointer-events: none;
+  user-select: none;
 }
 
 /* SCANNER CORNERS */
@@ -1613,6 +1678,176 @@ button#headerScan {
 }
 
 #navScan:active .scan-icon-wrap {
+  transform: scale(0.92);
+}
+
+/* ==========================================================================
+   CUSTOM DUAL-STATE ADD-TO-CART PRODUCTS ICON
+   ========================================================================== */
+#navProducts {
+  padding: 6px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+#navProducts span:not(.products-icon-wrap) {
+  display: none !important;
+}
+
+.products-icon-wrap {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-top: 1px;
+}
+
+.products-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  border: none !important;
+  outline: none !important;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.products-img.products-normal {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.products-img.products-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(0.92);
+}
+
+#navProducts:hover .products-icon-wrap {
+  transform: translateY(-1px) scale(1.08);
+}
+
+#navProducts:hover .products-img.products-normal {
+  opacity: 0.15;
+}
+
+#navProducts:hover .products-img.products-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#navProducts.active .products-img.products-normal {
+  opacity: 0 !important;
+  transform: scale(0.88) !important;
+}
+
+#navProducts.active .products-img.products-active {
+  opacity: 1 !important;
+  transform: scale(1.05) !important;
+}
+
+#navProducts:active .products-icon-wrap {
+  transform: scale(0.92);
+}
+
+/* ==========================================================================
+   CUSTOM DUAL-STATE USER / SAVED ICON
+   ========================================================================== */
+#navSaved {
+  padding: 6px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+#navSaved span:not(.saved-icon-wrap) {
+  display: none !important;
+}
+
+.saved-icon-wrap {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-top: 1px;
+}
+
+.saved-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  border: none !important;
+  outline: none !important;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.saved-img.saved-normal {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.saved-img.saved-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(0.92);
+}
+
+#navSaved:hover .saved-icon-wrap {
+  transform: translateY(-1px) scale(1.08);
+}
+
+#navSaved:hover .saved-img.saved-normal {
+  opacity: 0.15;
+}
+
+#navSaved:hover .saved-img.saved-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#navSaved.active .saved-img.saved-normal {
+  opacity: 0 !important;
+  transform: scale(0.88) !important;
+}
+
+#navSaved.active .saved-img.saved-active {
+  opacity: 1 !important;
+  transform: scale(1.05) !important;
+}
+
+#navSaved:active .saved-icon-wrap {
   transform: scale(0.92);
 }
 
@@ -2429,4 +2664,166 @@ button#headerScan {
   color: var(--text);
   line-height: 1.4;
 }
+
+/* ==========================================================================
+   AUTOMATIC DARK MODE (SYSTEM PREFERS-COLOR-SCHEME & .dark-mode CLASS)
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --surface: #121212;
+    --card: #18181b;
+    --card-light: #27272a;
+    --border: #27272a;
+    --border-light: #3f3f46;
+    --text: #ffffff;
+    --text-muted: #a1a1aa;
+    --gray: #a1a1aa;
+    --white: #ffffff;
+  }
+
+  body, .app, .modal-sheet, .bottom-nav, .home-header, .scan-header, .search-input-box, .post-card, .option-box, .search-box, .pwa-banner, .product-modal, .result-modal {
+    background-color: var(--bg) !important;
+    color: var(--text) !important;
+  }
+
+  .app {
+    background: #000000 !important;
+  }
+
+  .bottom-nav {
+    background: rgba(0, 0, 0, 0.9) !important;
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border) !important;
+  }
+
+  .home-header, .scan-header {
+    background: rgba(0, 0, 0, 0.9) !important;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border) !important;
+  }
+
+  .post-card {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .option-box, .search-box {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text) !important;
+  }
+
+  .modal-sheet {
+    background: #18181b !important;
+    border: 1px solid var(--border) !important;
+    color: #ffffff !important;
+  }
+
+  input, select, textarea {
+    background: var(--card-light) !important;
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+  }
+
+  .filter-btn {
+    background: var(--card) !important;
+    color: var(--text-muted) !important;
+    border: 1px solid var(--border) !important;
+  }
+
+  .filter-btn.active {
+    background: var(--text) !important;
+    color: var(--bg) !important;
+  }
+}
+
+html.dark-mode {
+  color-scheme: dark;
+}
+
+html.dark-mode :root {
+  --bg: #000000;
+  --surface: #121212;
+  --card: #18181b;
+  --card-light: #27272a;
+  --border: #27272a;
+  --border-light: #3f3f46;
+  --text: #ffffff;
+  --text-muted: #a1a1aa;
+  --gray: #a1a1aa;
+  --white: #ffffff;
+}
+
+html.dark-mode body, 
+html.dark-mode .app, 
+html.dark-mode .modal-sheet, 
+html.dark-mode .bottom-nav, 
+html.dark-mode .home-header, 
+html.dark-mode .scan-header, 
+html.dark-mode .search-input-box, 
+html.dark-mode .post-card, 
+html.dark-mode .option-box, 
+html.dark-mode .search-box, 
+html.dark-mode .pwa-banner {
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+html.dark-mode .app {
+  background: #000000 !important;
+}
+
+html.dark-mode .bottom-nav {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border) !important;
+}
+
+html.dark-mode .home-header, 
+html.dark-mode .scan-header {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border) !important;
+}
+
+html.dark-mode .post-card {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+html.dark-mode .option-box, 
+html.dark-mode .search-box {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+}
+
+html.dark-mode .modal-sheet {
+  background: #18181b !important;
+  border: 1px solid var(--border) !important;
+  color: #ffffff !important;
+}
+
+html.dark-mode input, 
+html.dark-mode select, 
+html.dark-mode textarea {
+  background: var(--card-light) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+
+html.dark-mode .filter-btn {
+  background: var(--card) !important;
+  color: var(--text-muted) !important;
+  border: 1px solid var(--border) !important;
+}
+
+html.dark-mode .filter-btn.active {
+  background: var(--text) !important;
+  color: var(--bg) !important;
+}
+
 

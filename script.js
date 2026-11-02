@@ -2,6 +2,19 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // =========================================================================
+  // AUTOMATIC DARK / LIGHT MODE DETECTION & LIVE SYNC
+  // =========================================================================
+  const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  function handleThemeChange(e) {
+    if (e.matches) {
+      document.documentElement.classList.add('dark-mode');
+    } else {
+      document.documentElement.classList.remove('dark-mode');
+    }
+  }
+  darkModeMediaQuery.addEventListener('change', handleThemeChange);
+  handleThemeChange(darkModeMediaQuery);
+  // =========================================================================
   // DATA STORE (PERSISTENT & SEED DATA)
   // =========================================================================
   const INITIAL_POSTS = [
@@ -136,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const backBtn = document.getElementById('backBtn');
   const brandLogoHome = document.getElementById('brandLogoHome');
 
-  function switchToView(viewId) {
+  function switchToView(viewId, activeNavId = 'navHome') {
     if (currentView === 'scanView' && viewId !== 'scanView') {
       // STOP CAMERA CLEANLY WHEN LEAVING SCAN PAGE
       stopCamera();
@@ -148,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (homeView) homeView.classList.add('active');
       if (scanView) scanView.classList.remove('active');
       if (headerScan) headerScan.classList.remove('active');
-      updateNavHighlight('navHome');
+      updateNavHighlight(activeNavId);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (viewId === 'scanView') {
       if (scanView) scanView.classList.add('active');
@@ -224,8 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currentCategory = 'Product';
       updateCategoryFilterButtons();
       renderPosts();
-      switchToView('homeView');
-      updateNavHighlight('navProducts');
+      switchToView('homeView', 'navProducts');
     });
   }
 
@@ -236,8 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currentCategory = 'All';
       updateCategoryFilterButtons();
       renderPosts();
-      switchToView('homeView');
-      updateNavHighlight('navSaved');
+      switchToView('homeView', 'navSaved');
     });
   }
 
